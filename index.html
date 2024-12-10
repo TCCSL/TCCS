@@ -1,21 +1,73 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <script>
-    // Handle logout logic
-    window.addEventListener("storage", function(event) {
-      if (event.key === "logout") {
-        window.location.href = "https://www.authpro.com/auth/TrureCareCallServices/";
-      }
-    });
-
-    function logOut() {
-      localStorage.setItem("logout", Date.now());
-      window.location.href = "https://www.authpro.com/auth/TrureCareCallServices/";
-    }
-  </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Appointment Request Form</title>
 </head>
 <body>
-  <a href="#" onclick="logOut()">Log Out</a>
+    <h1>Appointment Request Form</h1>
+    <form action="submit_form.php" method="post">
+        <!-- Name field -->
+        <label for="full_name">Full Name:</label><br>
+        <input type="text" id="full_name" name="full_name" required><br><br>
+
+        <!-- Business Name field -->
+        <label for="business_name">Business Name:</label><br>
+        <input type="text" id="business_name" name="business_name" required><br><br>
+
+        <!-- Contact Number field -->
+        <label for="contact_number">Contact Number:</label><br>
+        <input type="text" id="contact_number" name="contact_number" required><br><br>
+
+        <!-- Email field -->
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <!-- Date and Time field -->
+        <label for="preferred_datetime">What date and time work best for you:</label><br>
+        <input type="text" id="preferred_datetime" name="preferred_datetime" required><br><br>
+
+        <!-- Services field -->
+        <label for="services">What services are you interested in:</label><br>
+        <input type="text" id="services" name="services" required><br><br>
+
+        <!-- Submit button -->
+        <button type="submit">Submit</button>
+    </form>
 </body>
 </html>
+
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Collect data from the form
+    $full_name = htmlspecialchars($_POST['full_name']);
+    $business_name = htmlspecialchars($_POST['business_name']);
+    $contact_number = htmlspecialchars($_POST['contact_number']);
+    $email = htmlspecialchars($_POST['email']);
+    $preferred_datetime = htmlspecialchars($_POST['preferred_datetime']);
+    $services = htmlspecialchars($_POST['services']);
+
+    // Email details
+    $to = "admin@truecarecallservice.net"; // Replace with your email address
+    $subject = "New Appointment Request";
+    $message = "
+        Full Name: $full_name\n
+        Business Name: $business_name\n
+        Contact Number: $contact_number\n
+        Email: $email\n
+        Preferred Date & Time: $preferred_datetime\n
+        Services: $services\n
+    ";
+    $headers = "From: $email";
+
+    // Send the email
+    if (mail($to, $subject, $message, $headers)) {
+        echo "Your request has been submitted successfully.";
+    } else {
+        echo "Sorry, there was an error sending your request.";
+    }
+} else {
+    echo "Invalid request method.";
+}
+?>
